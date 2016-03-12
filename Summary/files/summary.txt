@@ -1,0 +1,20 @@
+[0]TCP/IP Networks
+[2]If you are managing a Linux machine that has many users, each of whom may wish to simultaneously connect to remote hosts on a network, you need a way of allowing them to share your network connection without interfering with each other.
+[8]When talking about TCP/IP networks you will hear the term datagram, which technically has a special meaning but is often used interchangeably with packet.
+[11]TCP/IP traces its origins to a research project funded by the United States Defense Advanced Research Projects Agency (DARPA) in 1969.
+[13]In 1983, the new protocol suite TCP/IP was adopted as a standard, and all hosts on the network were required to use it.
+[14]When ARPANET finally grew into the Internet (with ARPANET itself passing out of existence in 1990), the use of TCP/IP had spread to networks beyond the Internet itself.
+[17]For something concrete to look at as we discuss TCP/IP throughout the following sections, we will consider Groucho Marx University (GMU), situated somewhere in Fredland, as an example.
+[26]While being logged into quark, you might also want to run a graphical user interface application, like a word processing program, a graphics drawing program, or even a World Wide Web browser.
+[43]The essential property of TCP is that it uses IP to give you the illusion of a simple connection between the two processes on your host and the remote machine, so you don't have to care about how and along which route your data actually travels.
+[46]TCP identifies the end points of such a connection by the IP addresses of the two hosts involved and the number of a port on each host.
+[48]If we are to strain the telephone example a little more, and you imagine that cities are like hosts, one might compare IP addresses to area codes (where numbers map to cities), and port numbers to local codes (where numbers map to individual people's telephones).
+[50]In the rlogin example, the client application (rlogin) opens a port on erdos and connects to port 513 on quark, to which the rlogind server is known to listen.
+[53]The shell's standard input and output are redirected to the TCP connection, so that anything you type to rlogin on your machine will be passed through the TCP stream and be given to the shell as standard input.
+[56]Although suitable for applications like rlogin, the overhead involved is prohibitive for applications like NFS, which instead uses a sibling protocol of TCP called UDP, or User Datagram Protocol.
+[60]It takes at least three datagrams to establish a TCP connection, another three to send and confirm a small amount of data each way, and another three to close the connection.
+[71]An important property of ports is that once a connection has been established between the client and the server, another copy of the server may attach to the server port and listen for more clients.
+[74]For example, if you log in twice to quark from erdos, the first rlogin client will use the local port 1023, and the second one will use port 1022.
+[78]In order for a client to know the proper port number, an agreement has to be reached between the administrators of both systems on the assignment of these numbers.
+[87]In Unix operating systems, the software performing all the tasks and protocols described above is usually part of the kernel, and so it is in Linux.
+[95]It also supports AF_IPX for Novell's network protocols, AF_X25 for the X.25 network protocol, AF_ATMPVC and AF_ATMSVC for the ATM network protocol and AF_AX25, AF_NETROM, and AF_ROSE sockets for Amateur Radio protocol support.

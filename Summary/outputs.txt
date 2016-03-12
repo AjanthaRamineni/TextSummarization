@@ -1,0 +1,106 @@
+NO OF SENTENSE :103
+
+
+1:  tcpip networks modern networking applications require sophisticated approach carrying data machine 
+2:  managing linux machine users wish simultaneously connect remote hosts network need way allowing share network connection interfering 
+3:  approach large number modern networking protocols uses called packet-switching 
+4:  packet small chunk data transferred machine network 
+5:  switching occurs datagram carried link network 
+6:  packet-switched network shares single network link users alternately sending packets user link 
+7:  solution unix systems subsequently non-unix systems adopted known tcpip 
+8:  talking tcpip networks hear term datagram technically special meaning used interchangeably packet 
+9:  section look underlying concepts tcpip protocols 
+10:  introduction tcpip networks tcpip traces origins research project funded united states defense advanced research projects agency darpa 1969 
+11:  arpanet experimental network converted operational 1975 proven success 
+12:  1983 new protocol suite tcpip adopted standard hosts network required use 
+13:  arpanet finally grew internet arpanet passing existence 1990 use tcpip spread networks internet 
+14:  companies built corporate tcpip networks internet grown point considered mainstream consumer technology 
+15:  difficult read newspaper magazine seeing reference internet use 
+16:  concrete look discuss tcpip following sections consider groucho marx university gmu situated fredland example 
+17:  departments run local area networks share run 
+18:  interconnected hooked internet single high-speed link 
+19:  suppose linux box connected lan unix hosts mathematics department erdos 
+20:  access host physics department say quark enter following command prompt enter login say andres password 
+21:  given shell1 quark type sitting systems console 
+22:  exit shell returned machines prompt 
+23:  just used instantaneous interactive applications tcpip provides remote login 
+24:  logged quark want run graphical user interface application like word processing program graphics drawing program world wide web browser 
+25:  x windows fully network-aware graphical user environment available different computing systems 
+26:  tell application want windows displayed hosts screen set display environment variable display=erdosmaths00 export display start application contact x server instead quarks display windows screen 
+27:  course requires x11 runnning erdos 
+28:  point tcpip allows quark erdos send x11 packets forth illusion youre single 
+29:  network transparent 
+30:  important application tcpip networks nfs stands network file 
+31:  form making network transparent basically allows treat directory hierarchies hosts local file systems look like directories host 
+32:  example users home directories kept central server machine hosts lan mount 
+33:  effect users log machine home directory 
+34:  similarly possible share large amounts data database documentation application programs hosts maintaining copy data server allowing hosts access 
+35:  come nfs 
+36:  course examples tcpip networks 
+37:  possibilities limitless introduce read book 
+38:  closer look way tcpip works 
+39:  information help understand configure machine 
+40:  start examining hardware slowly work way 
+41:  transmission control protocol sending datagrams host story 
+42:  log quark want reliable connection rlogin process erdos shell process quark 
+43:  information sent fro split packets sender reassembled character stream receiver 
+44:  trivial involves number complicated tasks 
+45:  important thing know ip intent reliable 
+46:  assume people ethernet started downloading latest release netscapes web browser source code gmus ftp server 
+47:  traffic generated gateway handle slow tight memory 
+48:  happen send packet quark sophus buffer space moment unable forward 
+49:  ip solves problem simply discarding 
+50:  packet irrevocably lost 
+51:  responsibility communicating hosts check integrity completeness data retransmit case error 
+52:  process performed protocol transmission control protocol tcp builds reliable service ip 
+53:  essential property tcp uses ip illusion simple connection processes host remote machine dont care route data actually travels 
+54:  tcp connection works essentially like two-way pipe processes write read 
+55:  think telephone conversation 
+56:  tcp identifies end points connection ip addresses hosts involved number port host 
+57:  ports viewed attachment points network connections 
+58:  strain telephone example little imagine cities like hosts compare ip addresses area codes numbers map cities port numbers local codes numbers map individual peoples telephones 
+59:  individual host support different services distinguished port number 
+60:  rlogin example client application rlogin opens port erdos connects port 513 quark rlogind server known listen 
+61:  action establishes tcp connection 
+62:  using connection rlogind performs authorization procedure spawns shell 
+63:  shells standard input output redirected tcp connection type rlogin machine passed tcp stream given shell standard input 
+64:  user datagram protocol course tcp isnt user protocol tcpip networking 
+65:  suitable applications like rlogin overhead involved prohibitive applications like nfs instead uses sibling protocol tcp called udp user datagram protocol 
+66:  just like tcp udp allows application contact service certain port remote machine doesnt establish connection 
+67:  instead use send single packets destination service—hence 
+68:  assume want request small data database server 
+69:  takes datagrams establish tcp connection send confirm small data way close connection 
+70:  udp provides means using datagrams achieve result 
+71:  udp said connectionless doesnt require establish close session 
+72:  simply data datagram send server server formulates reply puts data datagram addressed transmits 
+73:  faster efficient tcp simple transactions udp designed deal datagram loss 
+74:  application server example care 
+75:  ports ports viewed attachment points network connections 
+76:  application wants offer certain service attaches port waits clients called listening port 
+77:  client wants use service allocates port local host connects servers port remote host 
+78:  port open different machines machine process open port time 
+79:  important property ports connection established client server copy server attach server port listen clients 
+80:  property permits instance concurrent remote logins host using port 513 
+81:  tcp able tell connections come different ports hosts 
+82:  example log twice quark erdos rlogin client use local port 1023 second use port 1022 
+83:  connect port 513 quark 
+84:  connections distinguished use port numbers used erdos 
+85:  example shows use ports rendezvous points client contacts specific port obtain specific service 
+86:  order client know proper port number agreement reached administrators systems assignment numbers 
+87:  services widely used rlogin numbers administered centrally 
+88:  ietf internet engineering task force regularly releases rfc titled assigned numbers rfc-1700 
+89:  describes things port numbers assigned well-known services 
+90:  linux uses file called etcservices maps service names numbers 
+91:  worth noting tcp udp connections rely ports numbers conflict 
+92:  means tcp port 513 example different udp port 513 
+93:  fact ports serve access points different services rlogin tcp rwho udp 
+94:  socket library unix operating systems software performing tasks protocols described kernel linux 
+95:  programming interface unix world berkeley socket library 
+96:  derives popular analogy views ports sockets connecting port plugging 
+97:  provides bind specify remote host transport protocol service program connect listen using connect listen accept 
+98:  socket library somewhat general provides class tcpip-based sockets af_inet sockets class handles connections local machine af_unix class 
+99:  implementations handle classes like xns xerox networking protocol x25 
+100:  linux socket library standard libc c library 
+101:  supports af_inet af_inet6 sockets tcpip af_unix unix domain sockets 
+102:  supports af_ipx novells network protocols af_x25 x25 network protocol af_atmpvc af_atmsvc atm network protocol af_ax25 af_netrom af_rose sockets amateur radio protocol support 
+103:  protocol families developed added time 

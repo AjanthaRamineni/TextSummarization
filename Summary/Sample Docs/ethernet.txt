@@ -1,0 +1,65 @@
+TCP/IP Networks APPLICATIONS
+
+Modern networking applications require a sophisticated approach to carrying data from one machine to another. If you are managing a Linux machine that has many users, each of whom may wish to simultaneously connect to remote hosts on a network, you need a way of allowing them to share your network connection without interfering with each other. The approach that a large number of modern networking protocols uses is called packet-switching. A packet is a small chunk of data that is transferred from one machine to another across the network. The switching occurs as the datagram is carried across each link in the network. A packet-switched network shares a single network link among many users by alternately sending packets from one user to another across that link.
+
+The solution that Unix systems, and subsequently many non-Unix systems, have adopted is known as TCP/IP. When talking about TCP/IP networks you will hear the term datagram, which technically has a special meaning but is often used interchangeably with packet. In this section, we will have a look at underlying concepts of the TCP/IP protocols.
+
+Introduction to TCP/IP Networks
+
+TCP/IP traces its origins to a research project funded by the United States Defense Advanced Research Projects Agency (DARPA) in 1969. The ARPANET was an experimental network that was converted into an operational one in 1975 after it had proven to be a success.
+
+In 1983, the new protocol suite TCP/IP was adopted as a standard, and all hosts on the network were required to use it. When ARPANET finally grew into the Internet (with ARPANET itself passing out of existence in 1990), the use of TCP/IP had spread to networks beyond the Internet itself. Many companies have now built corporate TCP/IP networks, and the Internet has grown to a point at which it could almost be considered a mainstream consumer technology. It is difficult to read a newspaper or magazine now without seeing reference to the Internet; almost everyone can now use it.
+
+For something concrete to look at as we discuss TCP/IP throughout the following sections, we will consider Groucho Marx University (GMU), situated somewhere in Fredland, as an example. Most departments run their own Local Area Networks, while some share one and others run several of them. They are all interconnected and hooked to the Internet through a single high-speed link.
+
+Suppose your Linux box is connected to a LAN of Unix hosts at the Mathematics department, and its name is erdos. To access a host at the Physics department, say quark, you enter the following command:
+
+At the prompt, you enter your login name, say andres, and your password. You are then given a shell[1] on quark, to which you can type as if you were sitting at the system's console. After you exit the shell, you are returned to your own machine's prompt. You have just used one of the instantaneous, interactive applications that TCP/IP provides: remote login.
+
+While being logged into quark, you might also want to run a graphical user interface application, like a word processing program, a graphics drawing program, or even a World Wide Web browser. The X windows system is a fully network-aware graphical user environment, and it is available for many different computing systems. To tell this application that you want to have its windows displayed on your host's screen, you have to set the DISPLAY environment variable:
+
+$ DISPLAY=erdos.maths:0.0
+$ export DISPLAY
+
+If you now start your application, it will contact your X server instead of quark's, and display all its windows on your screen. Of course, this requires that you have X11 runnning on erdos. The point here is that TCP/IP allows quark and erdos to send X11 packets back and forth to give you the illusion that you're on a single system. The network is almost transparent here.
+
+Another very important application in TCP/IP networks is NFS, which stands for Network File System. It is another form of making the network transparent, because it basically allows you to treat directory hierarchies from other hosts as if they were local file systems and look like any other directories on your host. For example, all users' home directories can be kept on a central server machine from which all other hosts on the LAN mount them. The effect is that users can log in to any machine and find themselves in the same home directory. Similarly, it is possible to share large amounts of data (such as a database, documentation or application programs) among many hosts by maintaining one copy of the data on a server and allowing other hosts to access it. We will come back to NFS.
+
+Of course, these are only examples of what you can do with TCP/IP networks. The possibilities are almost limitless, and we'll introduce you to more as you read on through the book.
+
+We will now have a closer look at the way TCP/IP works. This information will help you understand how and why you have to configure your machine. We will start by examining the hardware, and slowly work our way up.
+
+
+The Transmission Control Protocol
+
+Sending datagrams from one host to another is not the whole story. If you log in to quark, you want to have a reliable connection between your rlogin process on erdos and the shell process on quark. Thus, the information sent to and fro must be split up into packets by the sender and reassembled into a character stream by the receiver. Trivial as it seems, this involves a number of complicated tasks.
+
+A very important thing to know about IP is that, by intent, it is not reliable. Assume that ten people on your Ethernet started downloading the latest release of Netscape's web browser source code from GMU's FTP server. The amount of traffic generated might be too much for the gateway to handle, because it's too slow and it's tight on memory. Now if you happen to send a packet to quark, sophus might be out of buffer space for a moment and therefore unable to forward it. IP solves this problem by simply discarding it. The packet is irrevocably lost. It is therefore the responsibility of the communicating hosts to check the integrity and completeness of the data and retransmit it in case of error.
+
+This process is performed by yet another protocol, Transmission Control Protocol (TCP), which builds a reliable service on top of IP. The essential property of TCP is that it uses IP to give you the illusion of a simple connection between the two processes on your host and the remote machine, so you don't have to care about how and along which route your data actually travels. A TCP connection works essentially like a two-way pipe that both processes may write to and read from. Think of it as a telephone conversation.
+
+TCP identifies the end points of such a connection by the IP addresses of the two hosts involved and the number of a port on each host. Ports may be viewed as attachment points for network connections. If we are to strain the telephone example a little more, and you imagine that cities are like hosts, one might compare IP addresses to area codes (where numbers map to cities), and port numbers to local codes (where numbers map to individual people's telephones). An individual host may support many different services, each distinguished by its own port number.
+
+In the rlogin example, the client application (rlogin) opens a port on erdos and connects to port 513 on quark, to which the rlogind server is known to listen. This action establishes a TCP connection. Using this connection, rlogind performs the authorization procedure and then spawns the shell. The shell's standard input and output are redirected to the TCP connection, so that anything you type to rlogin on your machine will be passed through the TCP stream and be given to the shell as standard input.
+
+The User Datagram Protocol
+
+Of course, TCP isn't the only user protocol in TCP/IP networking. Although suitable for applications like rlogin, the overhead involved is prohibitive for applications like NFS, which instead uses a sibling protocol of TCP called UDP, or User Datagram Protocol. Just like TCP, UDP allows an application to contact a service on a certain port of the remote machine, but it doesn't establish a connection for this. Instead, you use it to send single packets to the destination service—hence its name.
+
+Assume you want to request a small amount of data from a database server. It takes at least three datagrams to establish a TCP connection, another three to send and confirm a small amount of data each way, and another three to close the connection. UDP provides us with a means of using only two datagrams to achieve almost the same result. UDP is said to be connectionless, and it doesn't require us to establish and close a session. We simply put our data into a datagram and send it to the server; the server formulates its reply, puts the data into a datagram addressed back to us, and transmits it back. While this is both faster and more efficient than TCP for simple transactions, UDP was not designed to deal with datagram loss. It is up to the application, a name server for example, to take care of this.
+
+ More on Ports
+
+Ports may be viewed as attachment points for network connections. If an application wants to offer a certain service, it attaches itself to a port and waits for clients (this is also called listening on the port). A client who wants to use this service allocates a port on its local host and connects to the server's port on the remote host. The same port may be open on many different machines, but on each machine only one process can open a port at any one time.
+
+An important property of ports is that once a connection has been established between the client and the server, another copy of the server may attach to the server port and listen for more clients. This property permits, for instance, several concurrent remote logins to the same host, all using the same port 513. TCP is able to tell these connections from one another because they all come from different ports or hosts. For example, if you log in twice to quark from erdos, the first rlogin client will use the local port 1023, and the second one will use port 1022. Both, however, will connect to the same port 513 on quark. The two connections will be distinguished by use of the port numbers used at erdos.
+
+This example shows the use of ports as rendezvous points, where a client contacts a specific port to obtain a specific service. In order for a client to know the proper port number, an agreement has to be reached between the administrators of both systems on the assignment of these numbers. For services that are widely used, such as rlogin, these numbers have to be administered centrally. This is done by the IETF (Internet Engineering Task Force), which regularly releases an RFC titled Assigned Numbers (RFC-1700). It describes, among other things, the port numbers assigned to well-known services. Linux uses a file called /etc/services that maps service names to numbers.
+
+It is worth noting that although both TCP and UDP connections rely on ports, these numbers do not conflict. This means that TCP port 513, for example, is different from UDP port 513. In fact, these ports serve as access points for two different services, namely rlogin (TCP) and rwho (UDP).
+
+The Socket Library
+
+In Unix operating systems, the software performing all the tasks and protocols described above is usually part of the kernel, and so it is in Linux. The programming interface most common in the Unix world is the Berkeley Socket Library. Its name derives from a popular analogy that views ports as sockets and connecting to a port as plugging in. It provides the bind call to specify a remote host, a transport protocol, and a service that a program can connect or listen to (using connect, listen, and accept). The socket library is somewhat more general in that it provides not only a class of TCP/IP-based sockets (the AF_INET sockets), but also a class that handles connections local to the machine (the AF_UNIX class). Some implementations can also handle other classes, like the XNS (Xerox Networking System) protocol or X.25.
+
+In Linux, the socket library is part of the standard libc C library. It supports the AF_INET and AF_INET6 sockets for TCP/IP and AF_UNIX for Unix domain sockets. It also supports AF_IPX for Novell's network protocols, AF_X25 for the X.25 network protocol, AF_ATMPVC and AF_ATMSVC for the ATM network protocol and AF_AX25, AF_NETROM, and AF_ROSE sockets for Amateur Radio protocol support. Other protocol families are being developed and will be added in time.
